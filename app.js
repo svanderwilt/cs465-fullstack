@@ -4,6 +4,8 @@ var path = require("path");
 var cookieParser = require("cookie-parser");
 var logger = require("morgan");
 const hbs = require("hbs");
+require("./app_api/models/db");
+
 var indexRouter = require("./app_server/routes/index");
 var usersRouter = require("./app_server/routes/users");
 var travelRouter = require("./app_server/routes/travel");
@@ -12,6 +14,7 @@ var contactRouter = require("./app_server/routes/contact");
 var mealsRouter = require("./app_server/routes/meals");
 var newsRouter = require("./app_server/routes/news");
 var roomsRouter = require("./app_server/routes/rooms");
+var apiRouter = require("./app_api/routes/index");
 
 const { hasSubscribers } = require("diagnostics_channel");
 
@@ -31,6 +34,17 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, "public")));
 
+// allow CORS
+app.use("/api", (req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header(
+    "Access-Control-Allow-Headers",
+    "Origin, X-Requested-With, Content-Type, Accept"
+  );
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE");
+  next();
+});
+
 app.use("/", indexRouter);
 app.use("/users", usersRouter);
 app.use("/travel", travelRouter);
@@ -39,6 +53,7 @@ app.use("/contact", contactRouter);
 app.use("/meals", mealsRouter);
 app.use("/news", newsRouter);
 app.use("/rooms", roomsRouter);
+app.use("/api", apiRouter);
 
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
