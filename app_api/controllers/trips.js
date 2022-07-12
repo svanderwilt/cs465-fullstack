@@ -1,10 +1,11 @@
 const mongoose = require("mongoose");
 const Model = mongoose.model("trips");
+const User = mongoose.model("users");
 
 // get the user
 const getUser = (req, res, callback) => {
-  if (req.payload && req.payload.email) {
-    User.findOne({ email: req.payload.email }).exec((err, user) => {
+  if (req.auth && req.auth.email) {
+    User.findOne({ email: req.auth.email }).exec((err, user) => {
       if (!user) {
         return res.status(404).json({ message: "User not found" });
       } else if (err) {
@@ -45,7 +46,6 @@ const tripsFindByCode = async (req, res) => {
 };
 
 const tripsAddTrip = async (req, res) => {
-  console.log(req.body);
   getUser(req, res, (req, res) => {
     Model.create(
       {
@@ -70,7 +70,6 @@ const tripsAddTrip = async (req, res) => {
 };
 
 const tripsUpdateTrip = async (req, res) => {
-  console.log(req.body);
   getUser(req, res, (req, res) => {
     Model.findOneAndUpdate(
       { code: req.params.tripCode },

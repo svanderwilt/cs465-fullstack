@@ -4,12 +4,12 @@ const router = express.Router();
 const { expressjwt: jwt } = require("express-jwt");
 auth = jwt({
   secret: process.env.JWT_SECRET,
-  algorithms: ["HS512"],
+  algorithms: ["sha1", "RS256", "HS256"],
   userProperty: "payload",
 });
 
 const tripsController = require("../controllers/trips");
-const authController = require("..//controllers/authentication");
+const authController = require("../controllers/authentication");
 
 router.route("/login").post(authController.login);
 
